@@ -41,14 +41,14 @@ def get_min(file_path):
 	for files in glob.glob("*.dat"):	
 		file_list.append(files.replace('.dat',''))	
 	clean_signals = []
-	fs_target = 200
+	fs_target = 360
 	
 	min_len = []	
 	for f in file_list:
 		record = wfdb.rdrecord(f).__dict__
 		signal =  record['p_signal'][:,0]
 		fs = record['fs']			
-		ecg= hp.remove_baseline_wander(signal, 200)	
+		ecg= hp.remove_baseline_wander(signal, 360)	
 		ecg,_ = np.array(wfdb.processing.resample_sig(ecg,fs,fs_target))	
 		min_len.append(len(ecg))
 	min_f = min(min_len)
@@ -70,16 +70,16 @@ def get_data(file_path, target_directory, ecg_type):
 		
 	clean_signals = []
 	# Defines the target frequency that we resample all of the data to be in. 	
-	fs_target = 200
+	fs_target = 360
 	min_len = get_min(file_path)	
 	for f in file_list:
 		record = wfdb.rdrecord(f).__dict__
 		signal =  record['p_signal'][:,0]
 		fs = record['fs']			
 		# Remove baseline_wander, apply a lowpass filter, a highpass filter and finally normalize the bounds 	
-		ecg= hp.remove_baseline_wander(signal, 200)
-		ecg = hp.filter_signal(ecg, cutoff=0.75, sample_rate=200, filtertype='lowpass')
-		ecg = hp.filter_signal(ecg, cutoff=0.75, sample_rate=200, filtertype='highpass')	
+		ecg= hp.remove_baseline_wander(signal, 360)
+		ecg = hp.filter_signal(ecg, cutoff=0.75, sample_rate=360, filtertype='lowpass')
+		ecg = hp.filter_signal(ecg, cutoff=0.75, sample_rate=360, filtertype='highpass')	
 		ecg,_ = np.array(wfdb.processing.resample_sig(ecg,fs,fs_target))		
 		ecg = wfdb.processing.normalize_bound(ecg)			
 		# ECG signal length is different for each patient, so we only create spectograms for the first min_len elements of a singal for a given patient	
@@ -91,23 +91,6 @@ def get_data(file_path, target_directory, ecg_type):
 	for i in range(len(windows)):
 		plt.specgram(windows[i], Fs = 1, cmap = 'jet')
 		plt.savefig(target_directory + "/" + ecg_type + str(i)+ ".png") 
-		if i%100 == 0:
-			print("Graph:" + str(i) + "completed")	
-	return 
-
- 
-#def get_pxl_mat(file_path):
-#	os.dir(file_path)
-#	for files in glob.glob("*.png"):
-#		input_image = Image.open(files)
-#		preprocess = transforms.Compose([transforms.Resize(256), transforms.CenterCrop(224), transforms.ToTensor()])
-#		preprocess(input_image)
-
-	
-	
-def main(): 
-	 
-
-if __name__ == '__main__':
-	main()
+		plt.close()
+	return None
 
