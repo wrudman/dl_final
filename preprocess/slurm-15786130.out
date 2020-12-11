@@ -1,0 +1,9 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 15786130
+##  Job Name : build_af_graphs.sh
+##  Nodelist : node1634
+##      CPUs : 10
+##  Mem/Node : 40960 MB
+## Directory : /gpfs/data/ceickhof/ecg_data/code/preprocess
+##   Started : Tue Dec  1 20:58:42 EST 2020
+###############################################################################
